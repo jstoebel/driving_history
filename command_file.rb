@@ -48,7 +48,7 @@ class CommandFile
 
   def process
     # if the file does not exist the error will happen here
-    File.open(@file_loc).each do |line|
+    File.open(@file_loc).each_with_index do |line, idx|
       # binding.pry
       command = line.split[0] # what command is this line?
 
@@ -63,6 +63,8 @@ class CommandFile
         process_driver line
       when "Trip"
         process_trip line
+      else
+        raise ArgumentError, "invalid command on line #{idx+1}: '#{command}'"
       end
     end # open
 
@@ -74,14 +76,11 @@ class CommandFile
 
   private
   def process_driver line
-    p 'hello from process_driver', line
-
     driver_name = line.split[1]
     Driver.create! :name => driver_name
   end
 
   def process_trip line
-    p 'hello from process_trip', line
 
     # grab all attributes except the first one
     driver_name, start_time_str, end_time_str, miles_driven = line.split.slice(1,4)
@@ -90,7 +89,7 @@ class CommandFile
     start_time, end_time = [start_time_str, end_time_str].map{|str| Time.strptime str, "%H:%M"}
     
     # find the driver record this line references
-    driver = Driver.find_by_name driver_name
+    driver = Driver.find_by_name! driver_name
 
     # create the trip
     Trip.create!({:driver_id => driver.id, 

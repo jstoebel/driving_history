@@ -20,10 +20,14 @@ require 'pry'
 here = File.dirname(__FILE__) # path to this file
 project_root = File.join(here, '..')  # project root
 
+
 # load schema, models and command_file
 require File.join(project_root, 'schema.rb')
-Dir.glob(File.join(project_root, 'models', '*')).each {|model| require model }
+# Dir.glob(File.join(project_root, 'models', '*')).each {|model| require model }
+require './models/driver'
+require './models/trip'
 require './command_file'
+I18n.default_locale = 'en'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
