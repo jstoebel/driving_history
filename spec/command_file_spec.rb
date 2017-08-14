@@ -88,7 +88,7 @@ RSpec.describe CommandFile do
           expect {@command_file.process}.to raise_error(ArgumentError, "invalid strptime format - `%H:%M'")
         end
 
-        it "fails with 1 missing time" do
+        it "fails with 2 missing times" do
           @commands = ["Trip Dan 17.3"]
           mock_file
           expect {@command_file.process}.to raise_error(ArgumentError, "invalid strptime format - `%H:%M'")
@@ -105,5 +105,11 @@ RSpec.describe CommandFile do
     end # invalid command file
 
   end # process
+
+  describe "report"
+
+    
+
+  end # report
 
 end
