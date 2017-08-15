@@ -1,6 +1,5 @@
 require 'factory_girl'
 require 'database_cleaner'
-require 'pry'
 here = File.dirname(__FILE__) # path to this file
 project_root = File.join(here, '..') # project root
 

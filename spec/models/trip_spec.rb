@@ -1,4 +1,3 @@
-require 'pry'
 RSpec.describe Trip do
   describe '#driver' do
     before(:each) do

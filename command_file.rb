@@ -1,5 +1,3 @@
-require 'pry'
-
 # require models
 # we _could_ do something clever to require everything in the models directory,
 # but that seems like overkill for two files. If the project were to get bigger
