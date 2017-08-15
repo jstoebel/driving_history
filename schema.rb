@@ -1,6 +1,7 @@
 require 'sqlite3'
 require 'active_record'
 
+ActiveRecord::Schema.verbose = false # no output when setting up database
 ActiveRecord::Base.establish_connection(
   adapter: 'sqlite3',
   database: ':memory:'
