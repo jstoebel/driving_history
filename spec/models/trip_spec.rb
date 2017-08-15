@@ -58,13 +58,15 @@ RSpec.describe Trip do
     it "isn't valid if avg speed > 100 mph" do
       @trip.miles_driven = 101
       @trip.valid?
-      expect(@trip.errors[:base]).to eq(['average speed is too fast (> 100 mph).'])
+      expect(@trip.errors[:base])
+        .to eq(['average speed is too fast (> 100 mph).'])
     end
 
     it "isn't valid if avg speed < 5 mpg" do
       @trip.miles_driven = 4
       @trip.valid?
-      expect(@trip.errors[:base]).to eq(['average speed is too slow (< 5 mph).'])
+      expect(@trip.errors[:base])
+        .to eq(['average speed is too slow (< 5 mph).'])
     end
   end # get_drive_time
 end

@@ -8,7 +8,7 @@ RSpec.describe Driver do
     end
 
     it 'disallows dupicates' do
-      driver1 = FactoryGirl.create :driver
+      FactoryGirl.create :driver
       driver2 = FactoryGirl.build :driver
       driver2.valid?
 
@@ -27,27 +27,30 @@ RSpec.describe Driver do
 
   describe '#report' do
     it 'generates a report for one driver' do
-      t1 = FactoryGirl.create :trip
+      FactoryGirl.create :trip
       expect(Driver.report).to eq('Jacob: 10 miles @ 10 mph')
     end
 
     it 'properly sorts drivers by miles driven (decending order)' do
       d1 = FactoryGirl.create :driver
-      t1 = FactoryGirl.create :trip, driver: d1
+      FactoryGirl.create :trip, driver: d1
 
       d2 = FactoryGirl.create :driver, name: 'Megan'
-      t2 = FactoryGirl.create :trip, driver: d2, miles_driven: 20
-      expect(Driver.report).to eq("Megan: 20 miles @ 20 mph\nJacob: 10 miles @ 10 mph")
+      FactoryGirl.create :trip, driver: d2, miles_driven: 20
+      expect(Driver.report)
+        .to eq("Megan: 20 miles @ 20 mph\nJacob: 10 miles @ 10 mph")
     end
 
     it "doesn't include if miles_driven == 0" do
-      d1 = FactoryGirl.create :driver
+      FactoryGirl.create :driver
       expect(Driver.report).to eq('Jacob: 0 miles')
     end
 
     it 'handles singularization' do
       # should be able to handle when miles_driven == 1
-      FactoryGirl.create :trip, miles_driven: 1, start_time: Time.now, end_time: Time.now + 60
+      FactoryGirl.create :trip, miles_driven: 1,
+                                start_time: Time.now,
+                                end_time: Time.now + 60
       expect(Driver.report).to eq('Jacob: 1 mile @ 60 mph')
     end
   end # report

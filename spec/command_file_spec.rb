@@ -47,27 +47,31 @@ RSpec.describe CommandFile do
       it 'fails with invalid command' do
         @commands = ['foo']
         mock_file
-        expect { @command_file.process }.to raise_error(ArgumentError, "invalid command on line 1: 'foo'")
+        expect { @command_file.process }
+          .to raise_error(ArgumentError, "invalid command on line 1: 'foo'")
       end
 
       it 'fails with blank line' do
         @commands = ['']
         mock_file
-        expect { @command_file.process }.to raise_error(ArgumentError, "invalid command on line 1: ''")
+        expect { @command_file.process }
+          .to raise_error(ArgumentError, "invalid command on line 1: ''")
       end
 
       describe 'process_driver' do
         it 'fails with no driver name' do
           @commands = ['Driver']
           mock_file
-          expect { @command_file.process }.to raise_error(ActiveRecord::RecordInvalid)
+          expect { @command_file.process }
+            .to raise_error(ActiveRecord::RecordInvalid)
         end
 
         it 'fails with duplicate driver name' do
           driver1 = FactoryGirl.create :driver
           @commands = ["Driver #{driver1.name}"]
           mock_file
-          expect { @command_file.process }.to raise_error(ActiveRecord::RecordInvalid)
+          expect { @command_file.process }
+            .to raise_error(ActiveRecord::RecordInvalid)
         end
       end
 
@@ -75,25 +79,31 @@ RSpec.describe CommandFile do
         it 'fails with non existant driver name' do
           @commands = ['Trip Dan 07:15 07:45 17.3']
           mock_file
-          expect { @command_file.process }.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Driver")
+          expect { @command_file.process }
+            .to raise_error(
+              ActiveRecord::RecordNotFound, "Couldn't find Driver"
+            )
         end
         it 'fails with 1 missing time' do
           @commands = ['Trip Dan 07:45 17.3']
           mock_file
-          expect { @command_file.process }.to raise_error(ArgumentError, "invalid strptime format - `%H:%M'")
+          expect { @command_file.process }
+            .to raise_error(ArgumentError, "invalid strptime format - `%H:%M'")
         end
 
         it 'fails with 2 missing times' do
           @commands = ['Trip Dan 17.3']
           mock_file
-          expect { @command_file.process }.to raise_error(ArgumentError, "invalid strptime format - `%H:%M'")
+          expect { @command_file.process }
+            .to raise_error(ArgumentError, "invalid strptime format - `%H:%M'")
         end
 
         it 'fails with missing miles_driven' do
           driver = FactoryGirl.create :driver
           @commands = ["Trip #{driver.name} 07:15 07:45"]
           mock_file
-          expect { @command_file.process }.to raise_error(ActiveRecord::RecordInvalid)
+          expect { @command_file.process }
+            .to raise_error(ActiveRecord::RecordInvalid)
         end
       end # process_trip
     end # invalid command file
