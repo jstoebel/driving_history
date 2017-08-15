@@ -4,7 +4,7 @@ require 'pry'
 # we _could_ do something clever to require everything in the models directory,
 # but that seems like overkill for two files. If the project were to get bigger
 # we could require everything in one line like this:
-# Dir.glob(File.join(File.dirname(__FILE__), 'models', '*')).each {|model| require model } 
+# Dir.glob(File.join(File.dirname(__FILE__), 'models', '*')).each {|model| require model }
 
 require './models/driver'
 require './models/trip'
@@ -20,24 +20,23 @@ require './models/trip'
 
 # each line contains a command followed by some attributes
 # Driver: represents a driver in the system followed by the Drive's unique name.
-  # assume that names will be a unique identifier for drivers (only one driver named Dan for example)
+# assume that names will be a unique identifier for drivers (only one driver named Dan for example)
 
 # Trip: represents a single trip taken by a driver. the following fields are (in order):
-  # Driver's name
-  # trip start time (24 time)
-  # trip start time (24 time)
-  # miles driven
+# Driver's name
+# trip start time (24 time)
+# trip start time (24 time)
+# miles driven
 
-  # discard trips where 5 > average mph > 100
+# discard trips where 5 > average mph > 100
 class CommandFile
-
   attr_accessor :file_loc
 
-  ## 
+  ##
   # creates a new instance representing a command file
   # file_loc is the relative path to the command file to use
 
-  def initialize file_loc
+  def initialize(file_loc)
     @file_loc = file_loc
   end # initialize
 
@@ -59,12 +58,12 @@ class CommandFile
       # self.send("process_#{command.downcase}", line)
 
       case command
-      when "Driver"
+      when 'Driver'
         process_driver line
-      when "Trip"
+      when 'Trip'
         process_trip line
       else
-        raise ArgumentError, "invalid command on line #{idx+1}: '#{command}'"
+        raise ArgumentError, "invalid command on line #{idx + 1}: '#{command}'"
       end
     end # open
 
@@ -76,29 +75,26 @@ class CommandFile
   # driver names can't repeat so if we aren't able to save, we should raise a RecordInvalid error
 
   private
-  def process_driver line
+
+  def process_driver(line)
     driver_name = line.split[1]
-    Driver.create! :name => driver_name
+    Driver.create! name: driver_name
   end
 
-  def process_trip line
-
+  def process_trip(line)
     # grab all attributes except the first one
-    driver_name, start_time_str, end_time_str, miles_driven = line.split.slice(1,4)
+    driver_name, start_time_str, end_time_str, miles_driven = line.split.slice(1, 4)
 
     # convert start/end time from String to Time
-    start_time, end_time = [start_time_str, end_time_str].map{|str| Time.strptime str, "%H:%M"}
-    
+    start_time, end_time = [start_time_str, end_time_str].map { |str| Time.strptime str, '%H:%M' }
+
     # find the driver record this line references
     driver = Driver.find_by_name! driver_name
 
     # create the trip
-    Trip.create!({:driver_id => driver.id, 
-      :start_time => start_time,
-      :end_time => end_time,
-      :miles_driven => miles_driven.to_f,
-    })
-    
+    Trip.create!(driver_id: driver.id,
+                 start_time: start_time,
+                 end_time: end_time,
+                 miles_driven: miles_driven.to_f)
   end
-
 end
