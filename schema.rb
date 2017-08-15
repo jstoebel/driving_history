@@ -21,8 +21,5 @@ ActiveRecord::Schema.define do
     t.timestamps
   end
 
-  # execute %w(ALTER TABLE "articles" ADD CONSTRAINT trips_driver_id_fk FOREIGN KEY ("driver_id") REFERENCES "drivers" ("id")
-# )
   add_foreign_key :trips, :drivers
-
 end
