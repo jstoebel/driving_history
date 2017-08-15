@@ -8,4 +8,5 @@ require './schema'
 file_loc = ARGV[0]
 
 command_file = CommandFile.new file_loc
-p command_file.process
+command_file.process
+command_file.report

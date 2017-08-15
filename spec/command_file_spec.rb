@@ -123,7 +123,7 @@ RSpec.describe CommandFile do
         'Jacob: 60 miles @ 24 mph',
         'Megan: 42 miles @ 21 mph',
         'Ari: 0 miles'
-      ].join("\n")
+      ]
 
       mock_file
       expect(command_file.process).to eq(expected_output)

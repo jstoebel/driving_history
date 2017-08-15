@@ -40,7 +40,7 @@ class Driver < ActiveRecord::Base
       total_time = time_aggregate[driver_name] # get total_time for this driver
       driver_report driver_name, miles, total_time
     end
-    driver_reports.join("\n") # join into a string and return
+    # driver_reports.join("\n") # join into a string and return
   end
 
   ##

@@ -69,6 +69,12 @@ class CommandFile
   end # process
   # rubocop:enable MethodLength
 
+  ##
+  # outputs full driver report to console
+  def report
+    Driver.report.each { |line| puts line }
+  end
+
   private
 
   ##

@@ -28,7 +28,7 @@ RSpec.describe Driver do
   describe '#report' do
     it 'generates a report for one driver' do
       FactoryGirl.create :trip
-      expect(Driver.report).to eq('Jacob: 10 miles @ 10 mph')
+      expect(Driver.report).to eq(['Jacob: 10 miles @ 10 mph'])
     end
 
     it 'properly sorts drivers by miles driven (decending order)' do
@@ -38,12 +38,12 @@ RSpec.describe Driver do
       d2 = FactoryGirl.create :driver, name: 'Megan'
       FactoryGirl.create :trip, driver: d2, miles_driven: 20
       expect(Driver.report)
-        .to eq("Megan: 20 miles @ 20 mph\nJacob: 10 miles @ 10 mph")
+        .to eq(['Megan: 20 miles @ 20 mph', 'Jacob: 10 miles @ 10 mph'])
     end
 
     it "doesn't include if miles_driven == 0" do
       FactoryGirl.create :driver
-      expect(Driver.report).to eq('Jacob: 0 miles')
+      expect(Driver.report).to eq(['Jacob: 0 miles'])
     end
 
     it 'handles singularization' do
@@ -51,7 +51,7 @@ RSpec.describe Driver do
       FactoryGirl.create :trip, miles_driven: 1,
                                 start_time: Time.now,
                                 end_time: Time.now + 60
-      expect(Driver.report).to eq('Jacob: 1 mile @ 60 mph')
+      expect(Driver.report).to eq(['Jacob: 1 mile @ 60 mph'])
     end
   end # report
 end
