@@ -68,6 +68,7 @@ class CommandFile
       end
     end # open
 
+    Driver.report
   end # process
 
   ##

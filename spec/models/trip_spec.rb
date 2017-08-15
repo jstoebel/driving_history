@@ -71,30 +71,4 @@ RSpec.describe Trip do
     end
   end # get_drive_time
 
-  describe "#report" do
-
-    it "generates a report for one driver" do
-      t1 = FactoryGirl.create :trip
-      expect(Trip.report).to eq("Jacob: 10 miles @ 10 mph")
-    end
-
-    it "properly sorts drivers by miles driven (decending order)" do
-      d1 = FactoryGirl.create :driver
-      t1 = FactoryGirl.create :trip, :driver => d1
-
-      d2 = FactoryGirl.create :driver, :name => "Megan"
-      t2 = FactoryGirl.create :trip, :driver => d2, :miles_driven => 20
-      expect(Trip.report).to eq("Megan: 20 miles @ 20 mph\nJacob: 10 miles @ 10 mph")
-    end
-
-    it "doesn't include if miles_driven == 0" do
-      d1 = FactoryGirl.create :driver
-      expect(Trip.report).to eq("Jacob: 0 miles")
-    end
-
-    it "handles pulralization" do
-    end
-
-  end # report
-
 end

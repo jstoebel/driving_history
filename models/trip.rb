@@ -1,5 +1,5 @@
 require 'active_record'
-
+require 'active_support/inflector'
 ## 
 # represents a single trip
 # Table name: Trip

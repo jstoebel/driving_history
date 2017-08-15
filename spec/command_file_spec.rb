@@ -10,6 +10,10 @@ RSpec.describe CommandFile do
 
   describe "#process" do
 
+    subject(:mock_file) do
+      allow(File).to receive(:open).and_return(@commands)
+    end
+
     context "valid command file" do
       before(:each) do
         expected_path = "commands.txt"
@@ -44,10 +48,6 @@ RSpec.describe CommandFile do
         @command_file = CommandFile.new 'some_path.txt'
       end
 
-      subject(:mock_file) do
-        allow(File).to receive(:open).and_return(@commands)
-      end
-
       it "fails with invalid command" do
         @commands = ["foo"]
         mock_file
@@ -59,6 +59,7 @@ RSpec.describe CommandFile do
         mock_file
         expect { @command_file.process }.to raise_error(ArgumentError, "invalid command on line #{1}: ''")
       end
+
       describe "process_driver" do
 
         it "fails with no driver name" do
@@ -100,16 +101,31 @@ RSpec.describe CommandFile do
           mock_file
           expect {@command_file.process}.to raise_error(ActiveRecord::RecordInvalid)
         end
-      end
+      end # process_trip
 
     end # invalid command file
 
+    it "returns corrected output" do
+      command_file = CommandFile.new 'some_path.txt'
+
+      @commands = [
+        "Driver Megan",
+        "Driver Jacob",
+        "Driver Ari",
+        "Trip Megan 12:00 14:00 42.0",
+        "Trip Jacob 06:00 07:00 20.0",
+        "Trip Jacob 12:15 13:45 40.0"
+      ]
+      expected_output = [
+        "Jacob: 60 miles @ 24 mph",
+        "Megan: 42 miles @ 21 mph",
+        "Ari: 0 miles"
+      ].join("\n")
+
+      mock_file
+      expect(command_file.process).to eq(expected_output)
+    end
+
   end # process
-
-  describe "report"
-
-    
-
-  end # report
 
 end
