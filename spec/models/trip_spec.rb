@@ -1,11 +1,10 @@
 require 'pry'
 RSpec.describe Trip do
 
-  before(:each) do
-    @trip = FactoryGirl.build :trip
-  end
-
   describe "#driver" do
+    before(:each) do
+      @trip = FactoryGirl.build :trip
+    end
     # ensure the #driver method works
     it "pulls the driver" do
       @trip.save
@@ -15,6 +14,9 @@ RSpec.describe Trip do
   end # driver
 
   describe "basic validations" do
+    before(:each) do
+      @trip = FactoryGirl.build :trip
+    end
     # ensure that each attr is required
     [:driver_id, :start_time, :end_time, :miles_driven].each do |attr|
       it "requires #{attr}" do
@@ -44,6 +46,11 @@ RSpec.describe Trip do
   end # basic_validations
 
   describe "#get_drive_time" do
+
+    before(:each) do
+      @trip = FactoryGirl.build :trip
+    end
+
     it "computes drive time" do
       @trip.save
       expected_drive_time = (@trip.end_time - @trip.start_time) / 3600
@@ -63,5 +70,31 @@ RSpec.describe Trip do
       expect(@trip.errors[:base]).to eq(["average speed is too slow (< 5 mph)."])
     end
   end # get_drive_time
+
+  describe "#report" do
+
+    it "generates a report for one driver" do
+      t1 = FactoryGirl.create :trip
+      expect(Trip.report).to eq("Jacob: 10 miles @ 10 mph")
+    end
+
+    it "properly sorts drivers by miles driven (decending order)" do
+      d1 = FactoryGirl.create :driver
+      t1 = FactoryGirl.create :trip, :driver => d1
+
+      d2 = FactoryGirl.create :driver, :name => "Megan"
+      t2 = FactoryGirl.create :trip, :driver => d2, :miles_driven => 20
+      expect(Trip.report).to eq("Megan: 20 miles @ 20 mph\nJacob: 10 miles @ 10 mph")
+    end
+
+    it "doesn't include if miles_driven == 0" do
+      d1 = FactoryGirl.create :driver
+      expect(Trip.report).to eq("Jacob: 0 miles")
+    end
+
+    it "handles pulralization" do
+    end
+
+  end # report
 
 end
