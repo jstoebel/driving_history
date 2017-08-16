@@ -1,5 +1,6 @@
-require 'factory_girl'
-require 'database_cleaner'
+require 'rubygems'
+require 'bundler'
+Bundler.require(:default, :test)
 here = File.dirname(__FILE__) # path to this file
 project_root = File.join(here, '..') # project root
 
@@ -8,6 +9,8 @@ require File.join(project_root, 'schema.rb')
 require './models/driver'
 require './models/trip'
 require './command_file'
+
+# make sure validation errors don't try to use another language
 I18n.default_locale = 'en'
 
 RSpec.configure do |config|
@@ -25,10 +28,6 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     FactoryGirl.find_definitions
-  end
-
-  # database cleaner
-  config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end
