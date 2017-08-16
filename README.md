@@ -29,3 +29,18 @@ The models `Driver` and `Trip` need to describe the attributes and behavior of t
 
 The models are also not concerned with the end behavior when things go wrong. 
 For example, when a command file contains invalid, or incomplete trip data, the `Trip` model will produce an invalid instance containing validation errors. By calling `Trip.create!` in `CommandFile#process_trip` an error will be raised alerting the user that their data are invalid. Importantly, this behavior is specific to consumer of the API, not the API itself. We could easily imagine another consumer of this API that would need to handle validation errors in a different way (perhaps logging them to a file rather than causing a show stopping error)
+
+# Testing
+
+I created unit tests for both the `Trip` and `Driver` model as well as integration tests for the interaction of the `CommandFile` class with the `Trip` and `Driver` models. Specifically I was sure to test for the following
+
+## unit tests for models
+ - all validations trigger the expected errors when presented with invalid data
+ - all pathways of all methods produce the expected output
+
+## integration tests for `CommandFile` and Models
+
+ -  correct exceptions are raised for invalid commands
+ -  correct exceptions are raised for data that lead to invalid records
+ -  a valid data file correctly processes the data and outputs the expected result.
+
