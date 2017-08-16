@@ -1,8 +1,8 @@
 RSpec.describe Trip do
+  before(:each) do
+    @trip = FactoryGirl.build :trip
+  end
   describe '#driver' do
-    before(:each) do
-      @trip = FactoryGirl.build :trip
-    end
     # ensure the #driver method works
     it 'pulls the driver' do
       @trip.save
@@ -12,16 +12,12 @@ RSpec.describe Trip do
   end # driver
 
   describe 'basic validations' do
-    before(:each) do
-      @trip = FactoryGirl.build :trip
-    end
     # ensure that each attr is required
     %i[driver_id start_time end_time miles_driven].each do |attr|
       it "requires #{attr}" do
         blank_trip = Trip.new
         blank_trip.valid?
-        errors = blank_trip.errors
-        expect(errors[attr]).to include("can't be blank")
+        expect(blank_trip.errors[attr]).to include("can't be blank")
       end
     end
 
@@ -42,11 +38,7 @@ RSpec.describe Trip do
     end
   end # basic_validations
 
-  describe '#get_drive_time' do
-    before(:each) do
-      @trip = FactoryGirl.build :trip
-    end
-
+  describe '#compute_drive_time' do
     it 'computes drive time' do
       @trip.save
       expected_drive_time = (@trip.end_time - @trip.start_time) / 3600

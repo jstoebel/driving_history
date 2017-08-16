@@ -1,5 +1,5 @@
 RSpec.describe Driver do
-  describe 'name' do
+  describe '#name' do
     it 'requires a name' do
       empty_driver = Driver.new
       empty_driver.valid?
@@ -41,7 +41,7 @@ RSpec.describe Driver do
         .to eq(['Megan: 20 miles @ 20 mph', 'Jacob: 10 miles @ 10 mph'])
     end
 
-    it "doesn't include if miles_driven == 0" do
+    it "doesn't include mph if miles_driven == 0" do
       FactoryGirl.create :driver
       expect(Driver.report).to eq(['Jacob: 0 miles'])
     end
