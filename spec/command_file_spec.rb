@@ -1,23 +1,23 @@
 RSpec.describe CommandFile do
+  before(:each) do
+    @expected_path = 'commands.txt'
+    @command_file = CommandFile.new @expected_path
+  end
   describe '#initialize' do
     it 'saves file path' do
-      expected_path = 'some_file.txt'
-      cf = CommandFile.new expected_path
-      expect(cf.file_loc).to eq(expected_path)
+      expect(@command_file.file_loc).to eq(@expected_path)
     end
   end # initialize
 
   describe '#process' do
     subject(:mock_file) do
+      # mock File.open so we don't need to use an actual file
       allow(File).to receive(:open).and_return(@commands)
     end
 
     context 'valid command file' do
       before(:each) do
-        expected_path = 'commands.txt'
-        @command_file = CommandFile.new expected_path
-
-        commands = [
+        @commands = [
           'Driver Dan',
           'Driver Alex',
           'Driver Bob',
@@ -25,8 +25,6 @@ RSpec.describe CommandFile do
           'Trip Dan 06:12 06:32 21.8',
           'Trip Alex 12:01 13:16 42.0'
         ]
-        # mock File.open
-        allow(File).to receive(:open).and_return(commands)
         @command_file.process
       end # before each
 
@@ -40,10 +38,6 @@ RSpec.describe CommandFile do
     end # valid command file
 
     context 'invalid command file' do
-      before(:each) do
-        @command_file = CommandFile.new 'some_path.txt'
-      end
-
       it 'fails with invalid command' do
         @commands = ['foo']
         mock_file
@@ -63,7 +57,10 @@ RSpec.describe CommandFile do
           @commands = ['Driver']
           mock_file
           expect { @command_file.process }
-            .to raise_error(ActiveRecord::RecordInvalid)
+            .to raise_error(
+              ActiveRecord::RecordInvalid,
+              "Validation failed: Name can't be blank"
+            )
         end
 
         it 'fails with duplicate driver name' do
@@ -71,7 +68,10 @@ RSpec.describe CommandFile do
           @commands = ["Driver #{driver1.name}"]
           mock_file
           expect { @command_file.process }
-            .to raise_error(ActiveRecord::RecordInvalid)
+            .to raise_error(
+              ActiveRecord::RecordInvalid,
+              'Validation failed: Name has already been taken'
+            )
         end
       end
 
@@ -110,9 +110,8 @@ RSpec.describe CommandFile do
   end # process
 
   describe '#report' do
-    it 'returns correct output' do
-      command_file = CommandFile.new 'some_path.txt'
-
+    it 'prints correct output to stdout' do
+      # set up records
       jacob = FactoryGirl.create :driver, name: 'Jacob'
       FactoryGirl.create :trip,
                          driver: jacob, miles_driven: 60, start_time: Time.now,
@@ -131,7 +130,7 @@ RSpec.describe CommandFile do
         'Ari: 0 miles'
       ]
 
-      expect { command_file.report }
+      expect { @command_file.report }
         .to output(expected_output.join("\n") + "\n").to_stdout
     end
   end # report
