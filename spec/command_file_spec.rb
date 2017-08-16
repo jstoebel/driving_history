@@ -107,26 +107,32 @@ RSpec.describe CommandFile do
         end
       end # process_trip
     end # invalid command file
+  end # process
 
-    it 'returns corrected output' do
+  describe '#report' do
+    it 'returns correct output' do
       command_file = CommandFile.new 'some_path.txt'
 
-      @commands = [
-        'Driver Megan',
-        'Driver Jacob',
-        'Driver Ari',
-        'Trip Megan 12:00 14:00 42.0',
-        'Trip Jacob 06:00 07:00 20.0',
-        'Trip Jacob 12:15 13:45 40.0'
-      ]
+      jacob = FactoryGirl.create :driver, name: 'Jacob'
+      FactoryGirl.create :trip,
+                         driver: jacob, miles_driven: 60, start_time: Time.now,
+                         end_time: Time.now + (2.5 * 3600)
+
+      megan = FactoryGirl.create :driver, name: 'Megan'
+      FactoryGirl.create :trip,
+                         driver: megan, miles_driven: 42, start_time: Time.now,
+                         end_time: Time.now + (2 * 3600)
+
+      FactoryGirl.create :driver, name: 'Ari'
+
       expected_output = [
         'Jacob: 60 miles @ 24 mph',
         'Megan: 42 miles @ 21 mph',
         'Ari: 0 miles'
       ]
 
-      mock_file
-      expect(command_file.process).to eq(expected_output)
+      expect { command_file.report }
+        .to output(expected_output.join("\n") + "\n").to_stdout
     end
-  end # process
+  end # report
 end

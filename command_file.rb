@@ -63,7 +63,6 @@ class CommandFile
         raise ArgumentError, "invalid command on line #{idx + 1}: '#{command}'"
       end
     end # open
-    Driver.report
   end # process
   # rubocop:enable MethodLength
 

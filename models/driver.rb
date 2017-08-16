@@ -1,4 +1,3 @@
-require 'active_record'
 ##
 # represents a single driver
 # Table name: driver
@@ -12,10 +11,12 @@ class Driver < ActiveRecord::Base
             uniqueness: true
 
   ##
-  # generate a report on all drivers
+  # returns an array representing a report on all drivers
   # example:
-  #   Megan: 60 miles @ 50 mph
-  #   Jacob: 45 miles @ 30 mph
+  #   [
+  #     "Megan: 60 miles @ 50 mph",
+  #     "Jacob: 45 miles @ 30 mph"
+  #   ]
   def self.report
     # generate aggregate for miles_driven and drive_time
     # example structure: {"Driver1"=>total_value, "Driver2"=>total_value}
@@ -40,7 +41,7 @@ class Driver < ActiveRecord::Base
       total_time = time_aggregate[driver_name] # get total_time for this driver
       driver_report driver_name, miles, total_time
     end
-    # driver_reports.join("\n") # join into a string and return
+    driver_reports
   end
 
   ##
