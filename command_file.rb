@@ -10,7 +10,7 @@ require './models/driver'
 require './models/trip'
 
 ##
-# represents the an entire file of commands.
+# represents an entire file of commands.
 # Example format: (taken from problem statement)
 # Driver Dan
 # Driver Alex
@@ -35,36 +35,33 @@ class CommandFile
 
   ##
   # creates a new instance representing a command file
-  # file_loc is the relative path to the command file to use
+  # file_loc: relative path to the command file to use
   def initialize(file_loc)
     @file_loc = file_loc
   end # initialize
 
   ##
-  # iterates over each line in the command file
-  # and loads all data found into the database
-  # an ArgumentError is raised if a line is empty
-  # or contains an improper argument
-  # if file_loc is not a valid path an error is raised
-  # errors produced by the Trip or Driver models will not be caught
+  # iterates over each line in the command file and loads all data found into
+  # the database. An ArgumentError is raised if a line is empty or contains an
+  # improper argument. If file_loc is not a valid path an error is raised when
+  # trying to open the file. Errors produced by the Trip or Driver models will
+  # not be caught
 
-  # rubocop:disable MethodLength
+  # this method is only one line too long and I couldn't think of a way to
+  # refactor in a way that wasn't unnecessarily messy
   def process
     # if the file does not exist the error will happen here
     File.open(@file_loc).each_with_index do |line, idx|
       # send the line of data to the right method for handling
       command = line.split[0]
-      case command
-      when 'Driver'
-        process_driver line
-      when 'Trip'
-        process_trip line
-      else
+      valid_command = %w[Driver Trip].include? command # is this command valuid?
+      unless valid_command
         raise ArgumentError, "invalid command on line #{idx + 1}: '#{command}'"
       end
+      # send line to the right method for processing
+      send("process_#{command.downcase}", line)
     end # open
   end # process
-  # rubocop:enable MethodLength
 
   ##
   # outputs full driver report to console
@@ -76,13 +73,15 @@ class CommandFile
 
   ##
   # processes the driver by creating a record for that driver in the database
-  # driver names can't repeat so if we aren't able to save,
-  # we should raise a RecordInvalid error
+  # validation errors should cause an exception to be raised
   def process_driver(line)
     driver_name = line.split[1]
     Driver.create! name: driver_name
   end
 
+  ##
+  # processes the trip by creating a record for that trip in the database
+  # validation errors should cause an exception to be raised
   def process_trip(line)
     # grab all attributes except the first one
     driver_name, start_time_str, end_time_str, miles_driven = line
