@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler'
-Bundler.require(:default, :development)
+require 'active_record'
 
 require './command_file'
 require './schema'

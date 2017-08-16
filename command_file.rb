@@ -5,7 +5,7 @@
 # Dir
 #   .glob(File.join(File.dirname(__FILE__), 'models', '*'))
 #   .each {|model| require model }
-
+require 'active_record'
 require './models/driver'
 require './models/trip'
 
