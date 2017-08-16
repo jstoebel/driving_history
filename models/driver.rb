@@ -18,9 +18,11 @@ class Driver < ActiveRecord::Base
   #     "Jacob: 45 miles @ 30 mph"
   #   ]
   def self.report
+    # left join with trips table to include drivers w/o any trips
+    trips_by_driver_name = left_joins(:trips).group(:name)
+
     # generate aggregate for miles_driven and drive_time
     # example structure: {"Driver1"=>total_value, "Driver2"=>total_value}
-    trips_by_driver_name = left_joins(:trips).group(:name)
 
     # a 2d array with each inner array containing driver and total miles sorted
     # by miles in decending order
@@ -32,14 +34,12 @@ class Driver < ActiveRecord::Base
     # example: {"Jacob"=>60.0, "Megan"=>90.0}
     time_aggregate = trips_by_driver_name.sum(:drive_time)
 
-    # desired output: Alex: 42 miles @ 34 mph
-
     # map data to array, where each item is a single driver's report string
     driver_reports = miles_aggregate.each.map do |driver_miles_array|
       # driver_miles_array example: ["Jacob", 60.0]
       driver_name, miles = driver_miles_array # unpack array into name and miles
       total_time = time_aggregate[driver_name] # get total_time for this driver
-      driver_report driver_name, miles, total_time
+      driver_report driver_name, miles, total_time # get their report string
     end
     driver_reports
   end
@@ -48,11 +48,11 @@ class Driver < ActiveRecord::Base
   # generate a report on a single driver
   # name: (str) driver's name
   # miles (float) miles driven by driver
-  # total_time (float): total_time driven
-  # 0 trips
+  # total_time (float): total_time drivens
   def self.driver_report(driver_name, miles, total_time)
     base_str = "#{driver_name}: #{miles.round} #{'mile'.pluralize(miles.round)}"
 
+    # how to display mph (if at all)
     if total_time.zero?
       mph_to_display = ''
     else
