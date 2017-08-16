@@ -1,6 +1,6 @@
 ##
 # represents a single driver
-# Table name: driver
+# Table name: drivers
 #
 #  name(string)
 class Driver < ActiveRecord::Base
